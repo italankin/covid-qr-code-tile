@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">COVID QR Code</string>
+    <string name="tile_service">COVID QR Code</string>
+    <string name="tile_service_description">Displays COVID vaccination QR code</string>
+</resources>
