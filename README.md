@@ -1,4 +1,4 @@
-# COVID Qr Code Tile
+# COVID QR Code Tile
 
 A simple WearOS tile which shows COVID vaccination QR Code.
 
@@ -6,7 +6,7 @@ A simple WearOS tile which shows COVID vaccination QR Code.
 
 ## Build
 
-1. Retrieve QR Code (preferable a square image with a little bit of padding)
+1. Retrieve QR Code (preferable black on white square image with a little bit of padding)
 2. Place QR code image to `app/src/main/res/drawable-nodpi/qr.*` (in any image format supported by Android)
 3. Assemble the app:
 
