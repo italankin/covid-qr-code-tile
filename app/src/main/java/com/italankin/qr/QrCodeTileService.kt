@@ -1,9 +1,11 @@
 package com.italankin.qr
 
 import android.graphics.Color
+import android.os.PowerManager
 import androidx.wear.tiles.ColorBuilders.ColorProp
 import androidx.wear.tiles.DimensionBuilders
 import androidx.wear.tiles.DimensionBuilders.DpProp
+import androidx.wear.tiles.EventBuilders
 import androidx.wear.tiles.LayoutElementBuilders
 import androidx.wear.tiles.LayoutElementBuilders.Layout
 import androidx.wear.tiles.ModifiersBuilders
@@ -20,8 +22,17 @@ import com.google.common.util.concurrent.ListenableFuture
 
 private const val RESOURCES_VERSION = "1"
 private const val IMAGE_QR = "qr"
+private const val WAKELOCK_TAG = "qrcodetile:TileWakelock"
+private const val WAKELOCK_TIMEOUT = 30 * 1000L
 
 class QrCodeTileService : TileService() {
+
+    private lateinit var wakeLock: PowerManager.WakeLock
+
+    override fun onCreate() {
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, WAKELOCK_TAG)
+    }
 
     override fun onTileRequest(requestParams: TileRequest): ListenableFuture<Tile> {
         val tile = Tile.Builder()
@@ -59,6 +70,16 @@ class QrCodeTileService : TileService() {
                 .setVersion(RESOURCES_VERSION)
                 .build()
         )
+    }
+
+    override fun onTileEnterEvent(requestParams: EventBuilders.TileEnterEvent) {
+        wakeLock.acquire(WAKELOCK_TIMEOUT)
+    }
+
+    override fun onTileLeaveEvent(requestParams: EventBuilders.TileLeaveEvent) {
+        if (wakeLock.isHeld) {
+            wakeLock.release()
+        }
     }
 
     private fun createModifiers(): ModifiersBuilders.Modifiers {
